@@ -1,6 +1,5 @@
-:root, html {
-  margin: 0;
-  padding: 0;
+:root,
+html {
   box-sizing: border-box;
   font-size: 10px;
   --main: #234567;
@@ -9,7 +8,11 @@
   --black: #012345;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
+  margin: 0px;
+  padding: 0px;
   box-sizing: border-box;
 }
 
@@ -19,15 +22,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 h1 {
   font-size: 6.8rem;
+  margin-top: 6rem;
+  margin-bottom: 1.8rem;
 }
 
 h2 {
   font-size: 3.6rem;
+  margin-bottom: 6rem;
 }
 
 h3 {
@@ -46,7 +52,12 @@ h6 {
   font-size: 1.8rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   text-align: center;
 }
 
@@ -54,7 +65,8 @@ p {
   font-size: 1.6rem;
 }
 
-#gameBoard, #gameScreen {
+#gameBoard,
+#gameScreen {
   border-radius: 15px;
   padding-bottom: 2rem;
 }
@@ -72,10 +84,12 @@ p {
   border-bottom-left-radius: initial;
   border-bottom-right-radius: initial;
   margin-bottom: 2rem;
+  padding: 2rem;
 }
 
-.hidden {
-  display: none;
+#ui {
+  display: flex;
+  flex-direction: column;
 }
 
 button {
@@ -85,12 +99,21 @@ button {
   padding: 2rem;
   background: var(--light);
   color: var(--main);
+  margin: 0 2rem;
 }
 
-button:hover{
+button:hover {
   cursor: pointer;
 }
 
+input {
+  height: 4rem;
+  font-size: 3.2rem;
+  margin: 2rem;
+  margin-top: 0;
+  text-align: center;
+}
+
 .without-game-board {
- margin-top: 25vh;
+  margin-top: 25vh;
 }
