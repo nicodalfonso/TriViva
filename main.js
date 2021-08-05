@@ -27,28 +27,28 @@ class Game {
     pageTitle.innerText = "¡TriViva!";
     subTitle.innerText = "Viva la Trivia, Baby";
     button.innerText = "Do you want to play a game?";
-    // gameBoard.classList.toggle("hidden");
-    // gameScreen.classList.toggle("hidden");
     button.classList.toggle("without-game-board");
-    this.clickHandler = this.startGame;
-    updateClickHandler(button, this, this.startGame);
+    this.clickHandler = updateClickHandler(button, this, this.startGame);
   }
 
   // Arrow function binds `this` to the class instead of the button
   startGame = async () => {
-    // gameBoard.classList.toggle("hidden");
-    // gameScreen.classList.toggle("hidden");
-    button.classList.toggle("without-game-board");
-    this.addInput();
-    ui.append(button);
+    if (this.isGameOver) {
+      this.clearScreen();
+      this.isGameOver = false;
+      document.querySelector("#userInput").disabled = false;
+    } else {
+      button.classList.toggle("without-game-board");
+      this.addInput();
+      ui.append(button);
+      main.append(gameBoard);
+    }
     this.updateScore();
-    main.append(gameBoard);
     button.innerText = "Submit";
     await this.handleFetchData();
     subTitle.innerText = this.category.title;
     this.displayClue();
     updateClickHandler(button, this, this.handleInput);
-    console.log(this);
   };
 
   updateScore() {
@@ -65,13 +65,7 @@ class Game {
       this.updateScore();
       this.displayClue();
     } else {
-      this.isGameOver = true;
-      let finalScore = this.score;
-      this.score = 0;
-      this.updateScore();
-      this.clearScreen();
-      this.buildClue(`Game Over! Your final score was ${finalScore}`);
-      button.innerText = "Play Again?";
+      this.endGame(false);
     }
   };
 
@@ -84,7 +78,6 @@ class Game {
 
     this.category = await this.fetchCategory();
     this.clues = await this.fetchClues(this.category.id);
-    console.log(this);
   }
 
   async fetchCategory() {
@@ -105,6 +98,8 @@ class Game {
       [this.currentClue] = this.selectClue();
       this.clearScreen();
       this.buildClue(this.currentClue.question);
+    } else {
+      this.endGame(true);
     }
   }
 
@@ -131,7 +126,31 @@ class Game {
     input.type = "text";
     input.id = "userInput";
     input.placeholder = "Type your answer here";
+    input.addEventListener("keyup", (e) => {
+      e.preventDefault();
+      if (e.code === "Enter" || e.code === "Return") {
+        this.clickHandler();
+      }
+    });
     ui.prepend(input);
+  }
+
+  endGame(hasUserWon) {
+    this.isGameOver = true;
+    this.clearScreen();
+
+    if (hasUserWon) {
+      this.buildClue(`Congratulations!\nYou've won!\nYour final score is ${this.score}.`);
+    } else {
+      this.buildClue(`Game Over!\nThe correct answer was:\n${this.currentClue.answer}\nYour final score was ${this.score}`);
+      this.score = 0;
+      this.updateScore();
+    }
+
+    document.querySelector("#userInput").disabled = true;
+    button.innerText = "Play Again?";
+    this.clickHandler = updateClickHandler(button, this, this.startGame);
+    this.currentClue = null;
   }
 }
 
@@ -145,4 +164,5 @@ const updateClickHandler = (elem, manager, newClickHandler) => {
   elem.removeEventListener("click", manager.clickHandler);
   manager.clickHandler = newClickHandler;
   elem.addEventListener("click", newClickHandler);
+  return newClickHandler;
 };
