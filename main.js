@@ -94,10 +94,15 @@ class Game {
   }
 
   displayClue() {
+    console.log(this.clues);
     if (this.clues.length) {
       [this.currentClue] = this.selectClue();
       this.clearScreen();
-      this.buildClue(this.currentClue.question);
+      if (this.score > 0) {
+        this.buildClue("You got it, dude!\n\n" + this.currentClue.question);
+      } else {
+        this.buildClue(this.currentClue.question);
+      }
     } else {
       this.endGame(true);
     }
