@@ -70,7 +70,17 @@ class Game {
   };
 
   isInputEqual(userInput, answer) {
-    return userInput.trim().toLowerCase() === answer.trim().toLowerCase();
+    let strippedAnswer = this.stripHTML(answer);
+    let strippedInput = this.stripHTML(userInput);
+    return strippedInput.trim().toLowerCase() === strippedAnswer.trim().toLowerCase();
+  }
+
+  stripHTML(phrase) {
+    let document = new DOMParser().parseFromString(phrase, "text/html") ?? "";
+    let text = document.body.textContent ?? "";
+    text = text.replaceAll(/"/ig, "");
+    text = text.replaceAll(/\(.*\)/ig, "");
+    return text;
   }
 
   async handleFetchData() {
@@ -96,7 +106,9 @@ class Game {
   displayClue() {
     console.log(this.clues);
     if (this.clues.length) {
-      [this.currentClue] = this.selectClue();
+      let [clue] = this.selectClue();
+      clue.answer = this.stripHTML(clue.answer);
+      this.currentClue = clue;
       this.clearScreen();
       if (this.score > 0) {
         this.buildClue("You got it, dude!\n\n" + this.currentClue.question);
@@ -110,7 +122,9 @@ class Game {
 
   selectClue() {
     let i = Math.floor(Math.random() * this.clues.length);
-    return this.clues.splice(i, 1);
+    let clue = this.clues.splice(i, 1);
+    console.log(clue[0]);
+    return clue;
   }
 
   clearScreen() {
